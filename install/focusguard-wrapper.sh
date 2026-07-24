@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Restarts the daemon forever until ALLOW_EXIT is written (lock expired).
-set -euo pipefail
+# Ignores SIGTERM so systemctl stop cannot quietly end the lock loop.
+set -uo pipefail
 
 DATA="${FOCUSGUARD_DATA:-/var/lib/focusguard}"
 mkdir -p "$DATA"
+
+trap '' TERM INT HUP
 
 while [[ ! -f "$DATA/ALLOW_EXIT" ]]; do
   /usr/bin/python3 -m focusguard.daemon || true

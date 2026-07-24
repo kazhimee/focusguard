@@ -27,6 +27,9 @@ find "$SHARE" -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
 find "$SHARE" -type f -name '*.pyc' -delete 2>/dev/null || true
 
 install -m 755 "$ROOT/install/focusguard-wrapper.sh" "$PREFIX/lib/focusguard/focusguard-wrapper.sh"
+install -m 755 "$ROOT/install/focusguard-watchdog.sh" "$PREFIX/lib/focusguard/focusguard-watchdog.sh"
+mkdir -p "$SHARE/install"
+cp -a "$ROOT/install/." "$SHARE/install/"
 
 if python3 -c "import yaml" 2>/dev/null; then
   echo "==> PyYAML hazır"

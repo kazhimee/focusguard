@@ -1,0 +1,12 @@
+[Unit]
+Description=FocusGuard watchdog timer
+
+[Timer]
+OnBootSec=20s
+OnUnitActiveSec=10s
+AccuracySec=1s
+Persistent=true
+Unit=focusguard-watchdog.service
+
+[Install]
+WantedBy=timers.target

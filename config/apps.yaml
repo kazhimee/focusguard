@@ -53,7 +53,7 @@ blocked_processes:
   - element-desktop
   - slack
 
-# Short / ambiguous names — match process name (comm) ONLY, not cmdline
+# Short / ambiguous names — match process name (comm) ONLY
 blocked_process_names_exact:
   - origin
   - osu
@@ -67,14 +67,36 @@ blocked_process_names_exact:
   - wine
   - steam
 
-# Never kill these (music etc.)
+# Never kill these (browsers, editors, music)
 allowed_processes:
+  - brave
+  - brave-browser
+  - firefox
+  - firefox-bin
+  - chrome
+  - chromium
+  - chromium-browser
+  - google-chrome
+  - google-chrome-stable
+  - vivaldi
+  - vivaldi-bin
+  - opera
+  - librewolf
+  - code
+  - code-oss
+  - vscodium
+  - codium
+  - gnome-terminal
+  - kitty
+  - alacritty
+  - wezterm
+  - foot
+  - konsole
   - spotify
   - spotify-launcher
   - cider
   - apple-music
   - AppleMusic
-  - music
   - rhythmbox
   - strawberry
   - audacious
@@ -83,3 +105,7 @@ allowed_processes:
   - ffplay
   - vlc
   - plasma-browser-integration
+  - nautilus
+  - dolphin
+  - thunar
+  - pcmanfm

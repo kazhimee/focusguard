@@ -34,11 +34,16 @@ def _basename(path: str) -> str:
 
 
 def _is_allowed(name: str, argv0: str, allowed: list[str]) -> bool:
-    """Allowlist only checks process name / executable — not full argv."""
-    hay = f"{name} {argv0}".lower()
+    """Allowlist checks process name / executable basename only."""
+    name_l = name.lower()
+    base = _basename(argv0)
     for a in allowed:
         a = a.lower().strip()
-        if a and a in hay:
+        if not a:
+            continue
+        if name_l == a or name_l.startswith(a + "-") or name_l.startswith(a + "."):
+            return True
+        if base == a or base.startswith(a + "-") or base.startswith(a + "."):
             return True
     return False
 

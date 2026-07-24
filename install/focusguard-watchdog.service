@@ -1,0 +1,8 @@
+[Unit]
+Description=FocusGuard watchdog (restart lock daemon if killed)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/focusguard/focusguard-watchdog.sh
+Environment=FOCUSGUARD_DATA=/var/lib/focusguard
