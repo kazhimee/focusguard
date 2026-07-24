@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import re
 import signal
 import time
 from pathlib import Path
@@ -24,8 +23,19 @@ def _comm(pid: int) -> str:
         return ""
 
 
-def _is_allowed(name: str, cmdline: str, allowed: list[str]) -> bool:
-    hay = f"{name} {cmdline}".lower()
+def _argv0(cmdline: str) -> str:
+    if not cmdline:
+        return ""
+    return cmdline.split(None, 1)[0]
+
+
+def _basename(path: str) -> str:
+    return path.rsplit("/", 1)[-1].lower()
+
+
+def _is_allowed(name: str, argv0: str, allowed: list[str]) -> bool:
+    """Allowlist only checks process name / executable — not full argv."""
+    hay = f"{name} {argv0}".lower()
     for a in allowed:
         a = a.lower().strip()
         if a and a in hay:
@@ -35,28 +45,49 @@ def _is_allowed(name: str, cmdline: str, allowed: list[str]) -> bool:
 
 def _matches_exact_name(name: str, exact: list[str]) -> bool:
     n = name.lower().strip()
-    for e in exact:
-        if n == e.lower().strip():
-            return True
-    return False
+    return any(n == e.lower().strip() for e in exact if e)
 
 
 def _matches_pattern(name: str, cmdline: str, patterns: list[str]) -> bool:
+    """Strict match: process name or executable basename/path only.
+
+    Never scan the full cmdline — that false-positives on flags like
+    --num-raster-threads and Cursor shellIntegration paths.
+    """
     name_l = name.lower()
-    cmd_l = cmdline.lower()
+    argv0 = _argv0(cmdline)
+    base = _basename(argv0)
+    argv0_l = argv0.lower()
+
     for pat in patterns:
         p = pat.lower().strip()
         if not p:
             continue
-        # Prefer process-name hits; also match path segments for app binaries
-        if name_l == p or name_l.startswith(p + ".") or name_l.startswith(p + "-"):
+
+        # process name (comm)
+        if name_l == p or name_l.startswith(p + "-") or name_l.startswith(p + "."):
             return True
-        # Binary path: .../cursor, .../Discord, Cursor.AppImage
-        if re.search(rf"(^|/)({re.escape(p)})([.\s-]|$)", cmd_l):
+
+        # executable basename: discord, Cursor-3.12.17-x86_64.AppImage, steam
+        if (
+            base == p
+            or base.startswith(p + "-")
+            or base.startswith(p + ".")
+            or base.startswith(p + "_")
+        ):
             return True
-        # Longer names can safely match as substring in name/cmdline
-        if len(p) >= 5 and (p in name_l or p in cmd_l):
-            return True
+
+        # path segment for the binary itself / its app dir:
+        # .../cursor/cursor, .../Discord/Discord, .../cursor/chrome_crashpad_handler
+        # only inspect argv0 — never later arguments (avoids --num-raster-threads etc.)
+        parts = [seg for seg in argv0_l.split("/") if seg]
+        if parts:
+            if parts[-1] == p:
+                return True
+            # binary living inside an app folder named like the pattern
+            if len(parts) >= 2 and parts[-2] == p:
+                return True
+
     return False
 
 
@@ -78,7 +109,8 @@ def iter_blocked_pids() -> list[tuple[int, str]]:
             continue
         name = _comm(pid)
         cmd = _cmdline(pid)
-        if _is_allowed(name, cmd, allowed):
+        argv0 = _argv0(cmd)
+        if _is_allowed(name, argv0, allowed):
             continue
         if _matches_exact_name(name, exact) or _matches_pattern(name, cmd, patterns):
             found.append((pid, name or cmd[:40]))

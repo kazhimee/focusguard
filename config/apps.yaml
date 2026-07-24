@@ -52,10 +52,8 @@ blocked_processes:
   - whatsdesk
   - element-desktop
   - slack
-  - threads
-  - Threads
 
-# Short / ambiguous names — match process name (comm) ONLY, not full cmdline
+# Short / ambiguous names — match process name (comm) ONLY, not cmdline
 blocked_process_names_exact:
   - origin
   - osu

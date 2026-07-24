@@ -68,12 +68,24 @@ def _is_allowed(title: str, cls: str, allowed_kw: list[str], allowed_cls: list[s
         return True
     if any(a.lower() in c or c == a.lower() for a in allowed_cls if a):
         return True
-    # music.apple.com browser apps often include this in class/title
     if "music.apple" in t or "music.apple" in c:
         return True
     if "apple music" in t:
         return True
     return False
+
+
+def _keyword_hit(blob: str, keyword: str) -> bool:
+    """Prefer whole-word style hits to avoid flag/title false positives."""
+    k = keyword.lower().strip()
+    if not k:
+        return False
+    if len(k) <= 6:
+        # word-ish boundaries
+        import re
+
+        return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", blob) is not None
+    return k in blob
 
 
 def list_blocked_windows() -> list[tuple[str, str]]:
@@ -87,7 +99,7 @@ def list_blocked_windows() -> list[tuple[str, str]]:
         if _is_allowed(title, cls, allowed, allowed_cls):
             continue
         blob = f"{title} {cls}".lower()
-        if any(b in blob for b in blocked):
+        if any(_keyword_hit(blob, b) for b in blocked):
             found.append((wid, title or cls))
     return found
 
