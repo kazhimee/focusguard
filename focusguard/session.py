@@ -31,11 +31,11 @@ class LockSession:
         minutes, seconds = divmod(rem, 60)
         parts = []
         if days:
-            parts.append(f"{days}g")
+            parts.append(f"{days}d")
         if hours or days:
-            parts.append(f"{hours}s")
-        parts.append(f"{minutes}d")
-        parts.append(f"{seconds}sn")
+            parts.append(f"{hours}h")
+        parts.append(f"{minutes}m")
+        parts.append(f"{seconds}s")
         return " ".join(parts)
 
     def to_dict(self) -> dict:

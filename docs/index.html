@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FocusGuard — Linux odak kilidi</title>
-  <meta name="description" content="Linux için odak kilidi. Açıldıktan sonra birdaha durdurulamaz." />
+  <title>FocusGuard — Linux focus lock</title>
+  <meta name="description" content="Linux focus lock. Once started, it cannot be stopped." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
@@ -58,7 +58,7 @@
     .lead {
       font-size: 18px;
       color: var(--muted);
-      max-width: 34ch;
+      max-width: 38ch;
       line-height: 1.5;
       margin: 0 0 28px;
     }
@@ -154,40 +154,40 @@
   <main class="wrap">
     <span class="badge">Linux only</span>
     <h1>FocusGuard</h1>
-    <p class="lead">Sosyal medya, Threads, oyun ve yapay zekayı kilitler. Müzik ve kod forumları serbest.</p>
+    <p class="lead">Locks social media, Threads, games, and AI. Music and coding forums stay allowed.</p>
 
-    <section class="warn" aria-label="Uyarı">
-      <small>UYARI</small>
-      <strong>Açıldıktan sonra birdaha durdurulamaz</strong>
+    <section class="warn" aria-label="Warning">
+      <small>WARNING</small>
+      <strong>Once started, it cannot be stopped</strong>
     </section>
 
     <div class="cta">
-      <a class="btn btn-primary" href="https://github.com/kazhimee/focusguard">GitHub’da aç</a>
-      <a class="btn btn-ghost" href="https://github.com/kazhimee/focusguard#kurulum">Kurulum</a>
+      <a class="btn btn-primary" href="https://github.com/kazhimee/focusguard">Open on GitHub</a>
+      <a class="btn btn-ghost" href="https://github.com/kazhimee/focusguard#install">Install</a>
     </div>
 
     <div class="grid">
       <article class="card">
-        <h3>Engel</h3>
-        <p>Instagram, X, TikTok, Threads, Discord, YouTube, Steam, Heroic, Cursor ve AI siteleri.</p>
+        <h3>Blocked</h3>
+        <p>Instagram, X, TikTok, Threads, Discord, YouTube, Steam, Heroic, Cursor, and AI sites.</p>
       </article>
       <article class="card">
-        <h3>Serbest</h3>
+        <h3>Allowed</h3>
         <p>Spotify, Apple Music, w3schools, Coddy, Duolingo, GitHub, Stack Overflow.</p>
       </article>
       <article class="card">
-        <h3>Kilit</h3>
-        <p>systemd + hosts + process/window guard. Süre bitmeden stop yok.</p>
+        <h3>Lock</h3>
+        <p>systemd + hosts + process/window guard. No stop until the timer ends.</p>
       </article>
     </div>
 
-    <h2 style="font-family:Syne,sans-serif;margin:40px 0 12px;">Kurulum</h2>
+    <h2 style="font-family:Syne,sans-serif;margin:40px 0 12px;">Install</h2>
     <pre>git clone https://github.com/kazhimee/focusguard.git
 cd focusguard
 sudo ./install/install.sh
 focusguard gui</pre>
 
-    <footer>FocusGuard · yalnızca Linux · açıldıktan sonra birdaha durdurulamaz</footer>
+    <footer>FocusGuard · Linux only · once started, it cannot be stopped</footer>
   </main>
 </body>
 </html>

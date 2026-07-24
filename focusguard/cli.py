@@ -11,7 +11,7 @@ from .paths import settings
 
 def _root_required() -> None:
     if os.geteuid() != 0:
-        print("Bu komut root gerektirir. Şöyle dene: sudo focusguard ...", file=sys.stderr)
+        print("This command requires root. Try: sudo focusguard ...", file=sys.stderr)
         sys.exit(1)
 
 
@@ -39,22 +39,22 @@ def cmd_start(args: argparse.Namespace) -> int:
     subprocess.run(["systemctl", "daemon-reload"], check=False)
     subprocess.run(["systemctl", "enable", "--now", "focusguard.service"], check=True)
 
-    print("FocusGuard BAŞLATILDI")
-    print(f"  Süre : {days} gün")
-    print(f"  Bitiş: {sess.to_dict()['ends_iso']}")
-    print(f"  Kalan: {sess.remaining_human()}")
-    print("Açıldıktan sonra birdaha durdurulamaz.")
+    print("FocusGuard STARTED")
+    print(f"  Days : {days}")
+    print(f"  Ends : {sess.to_dict()['ends_iso']}")
+    print(f"  Left : {sess.remaining_human()}")
+    print("Once started, it cannot be stopped.")
     return 0
 
 
 def cmd_status(_args: argparse.Namespace) -> int:
     sess = session.load_session()
     active = bool(sess and sess.active)
-    print(f"Durum : {'KİLİTLİ' if active else 'kapalı'}")
+    print(f"Status : {'LOCKED' if active else 'off'}")
     if sess:
-        print(f"Başlangıç: {sess.to_dict()['started_iso']}")
-        print(f"Bitiş    : {sess.to_dict()['ends_iso']}")
-        print(f"Kalan    : {sess.remaining_human()}")
+        print(f"Started : {sess.to_dict()['started_iso']}")
+        print(f"Ends    : {sess.to_dict()['ends_iso']}")
+        print(f"Left    : {sess.remaining_human()}")
     r = subprocess.run(
         ["systemctl", "is-active", "focusguard.service"],
         capture_output=True,
@@ -63,9 +63,9 @@ def cmd_status(_args: argparse.Namespace) -> int:
     svc = (r.stdout or "").strip()
     if r.returncode != 0 and not svc:
         err = (r.stderr or "").strip()
-        svc = "yok" if "not been booted" in err or "Host is down" in err else (err.splitlines()[-1] if err else "unknown")
-    print(f"Servis : {svc}")
-    print(f"Hosts  : {'uygulandı' if hosts.hosts_intact() else 'yok'}")
+        svc = "n/a" if "not been booted" in err or "Host is down" in err else (err.splitlines()[-1] if err else "unknown")
+    print(f"Service: {svc}")
+    print(f"Hosts  : {'applied' if hosts.hosts_intact() else 'none'}")
     return 0
 
 
@@ -73,14 +73,14 @@ def cmd_stop(_args: argparse.Namespace) -> int:
     _root_required()
     sess = session.load_session()
     if sess and sess.active:
-        print("Açıldıktan sonra birdaha durdurulamaz.")
-        print(f"Kalan: {sess.remaining_human()}")
-        print(f"Bitiş: {sess.to_dict()['ends_iso']}")
+        print("Once started, it cannot be stopped.")
+        print(f"Left: {sess.remaining_human()}")
+        print(f"Ends: {sess.to_dict()['ends_iso']}")
         return 2
     from .expire import expire_unlock
 
     expire_unlock()
-    print("FocusGuard durduruldu.")
+    print("FocusGuard stopped.")
     return 0
 
 
@@ -88,12 +88,12 @@ def cmd_unlock(_args: argparse.Namespace) -> int:
     _root_required()
     sess = session.load_session()
     if sess and sess.active:
-        print("Açıldıktan sonra birdaha durdurulamaz.")
+        print("Once started, it cannot be stopped.")
         return 2
     from .expire import expire_unlock
 
     expire_unlock()
-    print("FocusGuard kilit kaldırıldı.")
+    print("FocusGuard unlocked.")
     return 0
 
 
@@ -105,23 +105,23 @@ def cmd_gui(_args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="focusguard", description="FocusGuard — Linux odak kilidi")
+    p = argparse.ArgumentParser(prog="focusguard", description="FocusGuard — Linux focus lock")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    start = sub.add_parser("start", help="Kilidi başlat (varsayılan 30 gün)")
-    start.add_argument("--days", type=int, default=None, help="Kilit süresi (gün)")
+    start = sub.add_parser("start", help="Start lock (default 30 days)")
+    start.add_argument("--days", type=int, default=None, help="Lock duration in days")
     start.set_defaults(func=cmd_start)
 
-    st = sub.add_parser("status", help="Durum")
+    st = sub.add_parser("status", help="Show status")
     st.set_defaults(func=cmd_status)
 
-    stop = sub.add_parser("stop", help="Durdur (sadece süre bitince)")
+    stop = sub.add_parser("stop", help="Stop (only after lock expires)")
     stop.set_defaults(func=cmd_stop)
 
-    unlock = sub.add_parser("unlock", help="Kilidi kaldır (sadece süre bitince / timer)")
+    unlock = sub.add_parser("unlock", help="Unlock (only after lock expires / timer)")
     unlock.set_defaults(func=cmd_unlock)
 
-    gui = sub.add_parser("gui", help="Linux arayüzünü aç")
+    gui = sub.add_parser("gui", help="Open Linux GUI")
     gui.set_defaults(func=cmd_gui)
 
     return p

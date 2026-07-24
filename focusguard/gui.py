@@ -15,7 +15,7 @@ from gi.repository import Adw, GLib, Gtk
 from . import hosts, session
 from .paths import settings
 
-WARNING = "Açıldıktan sonra birdaha durdurulamaz"
+WARNING = "Once started, it cannot be stopped"
 CSS = """
 window {
   background: #0c1118;
@@ -121,14 +121,14 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         brand.set_halign(Gtk.Align.START)
         root.append(brand)
 
-        tag = Gtk.Label(label="Sosyal medya, oyun ve yapay zeka kilidi.")
+        tag = Gtk.Label(label="Social media, games, and AI lock.")
         tag.add_css_class("tagline")
         tag.set_halign(Gtk.Align.START)
         root.append(tag)
 
         warn = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         warn.add_css_class("warn-box")
-        wtitle = Gtk.Label(label="UYARI")
+        wtitle = Gtk.Label(label="WARNING")
         wtitle.add_css_class("warn-title")
         wtitle.set_halign(Gtk.Align.START)
         wtext = Gtk.Label(label=WARNING)
@@ -141,7 +141,7 @@ class FocusGuardWindow(Adw.ApplicationWindow):
 
         status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         status_box.add_css_class("status-card")
-        sl = Gtk.Label(label="DURUM")
+        sl = Gtk.Label(label="STATUS")
         sl.add_css_class("status-label")
         sl.set_halign(Gtk.Align.START)
         self.status_value = Gtk.Label(label="…")
@@ -156,7 +156,7 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         root.append(status_box)
 
         days_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        days_label = Gtk.Label(label="Süre (gün)")
+        days_label = Gtk.Label(label="Duration (days)")
         days_label.set_halign(Gtk.Align.START)
         days_label.set_hexpand(True)
         self.days_spin = Gtk.SpinButton.new_with_range(1, 365, 1)
@@ -165,13 +165,13 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         days_row.append(self.days_spin)
         root.append(days_row)
 
-        self.lock_btn = Gtk.Button(label="Kilidi Başlat")
+        self.lock_btn = Gtk.Button(label="Start Lock")
         self.lock_btn.add_css_class("btn-lock")
         self.lock_btn.connect("clicked", self._on_lock)
         root.append(self.lock_btn)
 
         hint = Gtk.Label(
-            label="Müzik serbest · kod forumları serbest · Threads/sosyal/AI/oyun yasak"
+            label="Music allowed · coding forums allowed · Threads/social/AI/games blocked"
         )
         hint.add_css_class("hint")
         hint.set_wrap(True)
@@ -189,31 +189,31 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         sess = session.load_session()
         active = bool(sess and sess.active)
         if active:
-            self.status_value.set_text("KİLİTLİ")
+            self.status_value.set_text("LOCKED")
             self.status_value.remove_css_class("idle")
             self.status_value.add_css_class("locked")
-            self.remain_value.set_text(f"Kalan: {sess.remaining_human()}")
+            self.remain_value.set_text(f"Remaining: {sess.remaining_human()}")
             self.lock_btn.set_sensitive(False)
-            self.lock_btn.set_label("Kilit aktif — durdurulamaz")
+            self.lock_btn.set_label("Lock active — cannot be stopped")
             self.days_spin.set_sensitive(False)
         else:
-            self.status_value.set_text("Kapalı")
+            self.status_value.set_text("Off")
             self.status_value.remove_css_class("locked")
             self.status_value.add_css_class("idle")
-            hosts_txt = "hosts aktif" if hosts.hosts_intact() else "hazır"
+            hosts_txt = "hosts active" if hosts.hosts_intact() else "ready"
             self.remain_value.set_text(hosts_txt)
             self.lock_btn.set_sensitive(True)
-            self.lock_btn.set_label("Kilidi Başlat")
+            self.lock_btn.set_label("Start Lock")
             self.days_spin.set_sensitive(True)
 
     def _on_lock(self, _btn: Gtk.Button) -> None:
         days = int(self.days_spin.get_value())
         dialog = Adw.AlertDialog(
-            heading="Emin misin?",
-            body=f"{days} günlük kilit başlatılacak.\n\n{WARNING}",
+            heading="Are you sure?",
+            body=f"A {days}-day lock will start.\n\n{WARNING}",
         )
-        dialog.add_response("cancel", "Vazgeç")
-        dialog.add_response("go", "Kilitle")
+        dialog.add_response("cancel", "Cancel")
+        dialog.add_response("go", "Lock")
         dialog.set_response_appearance("go", Adw.ResponseAppearance.DESTRUCTIVE)
         dialog.connect("response", self._confirm_lock, days)
         dialog.present(self)
@@ -222,7 +222,7 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         if response != "go":
             return
         self.lock_btn.set_sensitive(False)
-        self.lock_btn.set_label("Başlatılıyor…")
+        self.lock_btn.set_label("Starting…")
 
         def worker() -> None:
             cmd = self._start_command(days)
@@ -250,9 +250,9 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         self._refresh_status()
         if not ok:
             self.lock_btn.set_sensitive(True)
-            self.lock_btn.set_label("Kilidi Başlat")
-            err = Adw.AlertDialog(heading="Başlatılamadı", body=msg or "Bilinmeyen hata")
-            err.add_response("ok", "Tamam")
+            self.lock_btn.set_label("Start Lock")
+            err = Adw.AlertDialog(heading="Failed to start", body=msg or "Unknown error")
+            err.add_response("ok", "OK")
             err.present(self)
         return False
 
@@ -268,7 +268,7 @@ class FocusGuardApp(Adw.Application):
 
 def main() -> None:
     if sys.platform != "linux":
-        print("FocusGuard arayüzü yalnızca Linux içindir.", file=sys.stderr)
+        print("FocusGuard GUI is Linux-only.", file=sys.stderr)
         sys.exit(1)
     app = FocusGuardApp()
     app.run(None)

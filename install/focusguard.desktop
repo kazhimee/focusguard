@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=FocusGuard
-Comment=Linux odak kilidi — Açıldıktan sonra birdaha durdurulamaz
+Comment=Linux focus lock — Once started, it cannot be stopped
 Exec=focusguard gui
 Icon=security-high
 Terminal=false

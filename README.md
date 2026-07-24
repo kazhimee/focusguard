@@ -1,11 +1,11 @@
 # FocusGuard
 
-> **Açıldıktan sonra birdaha durdurulamaz.**  
-> Yalnızca **Linux**.
+> **Once started, it cannot be stopped.**  
+> **Linux only.**
 
-Sosyal medya (Threads dahil), oyun ve yapay zeka uygulamalarını/sitelerini kilitler. Spotify / Apple Music ve kodlama forumları serbest kalır.
+Locks social media (including Threads), games, and AI apps/sites. Spotify / Apple Music and coding forums stay allowed.
 
-## Kurulum
+## Install
 
 ```bash
 git clone https://github.com/kazhimee/focusguard.git
@@ -14,39 +14,39 @@ sudo pacman -S --needed python-yaml python-gobject libadwaita gtk4 wmctrl
 sudo ./install/install.sh
 ```
 
-## Kullanım
+## Usage
 
 ```bash
-# Arayüz
+# GUI
 focusguard gui
 
-# veya CLI
-sudo focusguard start          # varsayılan 30 gün
+# or CLI
+sudo focusguard start          # default 30 days
 sudo focusguard start --days 7
 focusguard status
 ```
 
-## Ne engellenir / ne serbest?
+## Blocked / allowed
 
-| Engelli | Serbest |
+| Blocked | Allowed |
 |--------|---------|
 | Instagram, X, TikTok, **Threads**, Discord, YouTube… | Spotify, Apple Music |
 | ChatGPT, Claude, Gemini, Cursor… | w3schools, Coddy, Duolingo, GitHub… |
-| Steam, Heroic, Lutris, oyunlar | Editörler (Cursor hariç) |
+| Steam, Heroic, Lutris, games | Editors (except Cursor) |
 
-Listeler: `config/domains.yaml`, `config/apps.yaml`
+Lists: `config/domains.yaml`, `config/apps.yaml`
 
-## Nasıl çalışır?
+## How it works
 
-1. systemd servisi (`Restart=always`, `RefuseManualStop`)
+1. systemd service (`Restart=always`, `RefuseManualStop`)
 2. `/etc/hosts` sinkhole
-3. Yasaklı process öldürme
-4. Pencere başlığı / class tarama
+3. Blocked process killer
+4. Window title / class scanner
 
 ## Site
 
-GitHub Pages: proje `docs/` klasöründen yayınlanır.
+GitHub Pages: https://kazhimee.github.io/focusguard/
 
-## Lisans
+## License
 
 MIT

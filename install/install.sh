@@ -92,9 +92,9 @@ systemctl daemon-reload
 
 echo
 echo "Kurulum tamam: $BIN"
-echo "  Arayüz : focusguard gui"
-echo "  Başlat : sudo focusguard start"
-echo "  Durum  : focusguard status"
+echo "  GUI    : focusguard gui"
+echo "  Start  : sudo focusguard start"
+echo "  Status : focusguard status"
 echo
-echo "Önerilen: sudo pacman -S --needed wmctrl python-gobject libadwaita gtk4"
-echo "UYARI: Açıldıktan sonra birdaha durdurulamaz."
+echo "Recommended: sudo pacman -S --needed wmctrl python-gobject libadwaita gtk4"
+echo "WARNING: Once started, it cannot be stopped."
