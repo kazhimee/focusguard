@@ -4,3 +4,7 @@ poll_interval_seconds: 2
 hosts_reapply_seconds: 15
 window_scan: true
 process_scan: true
+# Optional fixed emergency code.
+# Enter this 10 times in a row to unlock early:
+#   sudo focusguard emergency FG-EXIT-9K
+emergency_code: "FG-EXIT-9K"

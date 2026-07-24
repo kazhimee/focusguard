@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import time
@@ -14,6 +15,35 @@ from .paths import (
 )
 
 BACKUP_PATH = Path("/var/lib/focusguard/hosts.backup")
+
+# Valid hostname labels only — paths like bing.com/chat break /etc/hosts parsers.
+_HOST_RE = re.compile(
+    r"^(?=.{1,253}$)(?!-)[a-z0-9-]+(\.[a-z0-9-]+)+$"
+)
+
+# Never sinkhole these (browsing breaks otherwise).
+_NEVER_BLOCK = {
+    "localhost",
+    "localhost.localdomain",
+    "google.com",
+    "www.google.com",
+    "google.com.tr",
+    "www.google.com.tr",
+    "googleapis.com",
+    "gstatic.com",
+    "googleusercontent.com",
+    "gvt1.com",
+    "gvt2.com",
+    "brave.com",
+    "www.brave.com",
+    "search.brave.com",
+    "laptop-updates.brave.com",
+    "variations.brave.com",
+    "cloudflare.com",
+    "www.cloudflare.com",
+    "dns.google",
+    "one.one.one.one",
+}
 
 
 def _immutable(path: Path, enable: bool) -> None:
@@ -42,10 +72,41 @@ def _strip_focusguard_block(text: str) -> str:
     return "".join(out)
 
 
+def sanitize_domain(raw: str) -> str | None:
+    d = (raw or "").strip().lower()
+    if not d or "/" in d or ":" in d or " " in d:
+        return None
+    # strip accidental scheme
+    if d.startswith("http://"):
+        d = d[7:]
+    if d.startswith("https://"):
+        d = d[8:]
+    d = d.split("/", 1)[0]
+    if d in _NEVER_BLOCK:
+        return None
+    # Never block bare google / brave search infrastructure
+    if d.endswith(".gstatic.com") or d.endswith(".googleapis.com"):
+        return None
+    if d.endswith(".googleusercontent.com"):
+        return None
+    if not _HOST_RE.match(d):
+        return None
+    return d
+
+
+def _normalize_domains(domains: list[str]) -> list[str]:
+    out: set[str] = set()
+    for raw in domains:
+        d = sanitize_domain(raw)
+        if d:
+            out.add(d)
+    out -= _NEVER_BLOCK
+    return sorted(out)
+
+
 def _build_block(domains: list[str]) -> str:
-    unique = sorted({d.strip().lower() for d in domains if d and d.strip()})
+    unique = _normalize_domains(domains)
     rows = [f"{SINKHOLE_IP} {d}" for d in unique]
-    # also www-less / with-www variants already listed in config; keep as given
     body = "\n".join(rows)
     return f"{HOSTS_MARKER_BEGIN}\n{body}\n{HOSTS_MARKER_END}\n"
 
@@ -64,6 +125,8 @@ def apply_hosts() -> None:
     new_text = cleaned + "\n" + _build_block(domains)
     HOSTS_PATH.write_text(new_text, encoding="utf-8")
     _immutable(HOSTS_PATH, True)
+    # flush resolved cache so bad entries disappear immediately
+    subprocess.run(["resolvectl", "flush-caches"], check=False, capture_output=True)
 
 
 def remove_hosts() -> None:
@@ -73,13 +136,28 @@ def remove_hosts() -> None:
     current = HOSTS_PATH.read_text(encoding="utf-8")
     cleaned = _strip_focusguard_block(current)
     HOSTS_PATH.write_text(cleaned, encoding="utf-8")
+    subprocess.run(["resolvectl", "flush-caches"], check=False, capture_output=True)
 
 
 def hosts_intact() -> bool:
     if not HOSTS_PATH.exists():
         return False
     text = HOSTS_PATH.read_text(encoding="utf-8")
-    return HOSTS_MARKER_BEGIN in text and HOSTS_MARKER_END in text
+    if HOSTS_MARKER_BEGIN not in text or HOSTS_MARKER_END not in text:
+        return False
+    # consider broken if invalid hostnames present inside the block
+    block = text.split(HOSTS_MARKER_BEGIN, 1)[1].split(HOSTS_MARKER_END, 1)[0]
+    for line in block.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split()
+        if len(parts) < 2:
+            return False
+        if sanitize_domain(parts[1]) is None and parts[1].lower() not in _NEVER_BLOCK:
+            # invalid entry inside our block
+            return False
+    return True
 
 
 def ensure_hosts(last_apply: float, interval: float) -> float:

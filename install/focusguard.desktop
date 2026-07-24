@@ -1,3 +1,4 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=FocusGuard
 Comment=Linux focus lock — Once started, it cannot be stopped

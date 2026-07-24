@@ -12,7 +12,7 @@ LOCK_FILE = DATA_DIR / "lock.json"
 HOSTS_MARKER_BEGIN = "# BEGIN FOCUSGUARD"
 HOSTS_MARKER_END = "# END FOCUSGUARD"
 HOSTS_PATH = Path("/etc/hosts")
-SINKHOLE_IP = "127.0.0.1"
+SINKHOLE_IP = "0.0.0.0"
 
 
 def load_yaml(name: str) -> dict:

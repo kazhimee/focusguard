@@ -61,7 +61,6 @@ blocked_domains:
   - gemini.google.com
   - bard.google.com
   - copilot.microsoft.com
-  - github.com/features/copilot
   - perplexity.ai
   - www.perplexity.ai
   - character.ai
@@ -98,8 +97,9 @@ blocked_domains:
   - mistral.ai
   - groq.com
   - console.groq.com
-  - bing.com/chat
-  - www.bing.com/chat
+  - bing.com
+  - www.bing.com
+  - copilot.microsoft.com
 
   # Games / stores (web)
   - store.steampowered.com

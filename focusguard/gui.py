@@ -170,6 +170,33 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         self.lock_btn.connect("clicked", self._on_lock)
         root.append(self.lock_btn)
 
+        # Emergency unlock (10 correct entries in a row)
+        em_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        em_box.add_css_class("status-card")
+        em_title = Gtk.Label(label="EMERGENCY UNLOCK")
+        em_title.add_css_class("status-label")
+        em_title.set_halign(Gtk.Align.START)
+        em_help = Gtk.Label(label="Enter the code 10 times in a row to unlock early.")
+        em_help.add_css_class("hint")
+        em_help.set_halign(Gtk.Align.START)
+        em_help.set_wrap(True)
+        em_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self.em_entry = Gtk.Entry()
+        self.em_entry.set_placeholder_text("Emergency code")
+        self.em_entry.set_hexpand(True)
+        self.em_btn = Gtk.Button(label="Submit")
+        self.em_btn.connect("clicked", self._on_emergency)
+        em_row.append(self.em_entry)
+        em_row.append(self.em_btn)
+        self.em_status = Gtk.Label(label="")
+        self.em_status.add_css_class("hint")
+        self.em_status.set_halign(Gtk.Align.START)
+        em_box.append(em_title)
+        em_box.append(em_help)
+        em_box.append(em_row)
+        em_box.append(self.em_status)
+        root.append(em_box)
+
         hint = Gtk.Label(
             label="Music allowed · coding forums allowed · Threads/social/AI/games blocked"
         )
@@ -178,6 +205,7 @@ class FocusGuardWindow(Adw.ApplicationWindow):
         hint.set_halign(Gtk.Align.START)
         root.append(hint)
 
+        self.set_default_size(520, 720)
         self._refresh_status()
         GLib.timeout_add_seconds(2, self._tick)
 
@@ -196,6 +224,8 @@ class FocusGuardWindow(Adw.ApplicationWindow):
             self.lock_btn.set_sensitive(False)
             self.lock_btn.set_label("Lock active — cannot be stopped")
             self.days_spin.set_sensitive(False)
+            self.em_entry.set_sensitive(True)
+            self.em_btn.set_sensitive(True)
         else:
             self.status_value.set_text("Off")
             self.status_value.remove_css_class("locked")
@@ -205,6 +235,38 @@ class FocusGuardWindow(Adw.ApplicationWindow):
             self.lock_btn.set_sensitive(True)
             self.lock_btn.set_label("Start Lock")
             self.days_spin.set_sensitive(True)
+            self.em_entry.set_sensitive(False)
+            self.em_btn.set_sensitive(False)
+
+    def _on_emergency(self, _btn: Gtk.Button) -> None:
+        code = self.em_entry.get_text().strip()
+        if not code:
+            self.em_status.set_text("Enter the emergency code.")
+            return
+        self.em_btn.set_sensitive(False)
+
+        def worker() -> None:
+            focusguard = shutil.which("focusguard") or "focusguard"
+            cmd = [focusguard, "emergency", code]
+            if os.geteuid() != 0:
+                if shutil.which("pkexec"):
+                    cmd = ["pkexec", *cmd]
+                else:
+                    cmd = ["sudo", *cmd]
+            try:
+                proc = subprocess.run(cmd, capture_output=True, text=True)
+                msg = (proc.stdout or proc.stderr or "").strip() or "No response"
+            except Exception as exc:  # noqa: BLE001
+                msg = str(exc)
+            GLib.idle_add(self._after_emergency, msg)
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _after_emergency(self, msg: str) -> bool:
+        self.em_status.set_text(msg)
+        self.em_entry.set_text("")
+        self._refresh_status()
+        return False
 
     def _on_lock(self, _btn: Gtk.Button) -> None:
         days = int(self.days_spin.get_value())
