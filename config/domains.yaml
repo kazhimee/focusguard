@@ -1,0 +1,182 @@
+# Domains redirected to sinkhole (blocked).
+# Music / coding learning sites are intentionally absent (allowed).
+blocked_domains:
+  # Social
+  - facebook.com
+  - www.facebook.com
+  - m.facebook.com
+  - instagram.com
+  - www.instagram.com
+  - twitter.com
+  - www.twitter.com
+  - x.com
+  - www.x.com
+  - t.co
+  - tiktok.com
+  - www.tiktok.com
+  - vm.tiktok.com
+  - snapchat.com
+  - www.snapchat.com
+  - reddit.com
+  - www.reddit.com
+  - old.reddit.com
+  - threads.net
+  - www.threads.net
+  - threads.com
+  - www.threads.com
+  - l.threads.com
+  - l.threads.net
+  - pinterest.com
+  - www.pinterest.com
+  - tumblr.com
+  - www.tumblr.com
+  - linkedin.com
+  - www.linkedin.com
+  - discord.com
+  - www.discord.com
+  - discordapp.com
+  - discord.gg
+  - whatsapp.com
+  - web.whatsapp.com
+  - telegram.org
+  - web.telegram.org
+  - messenger.com
+  - www.messenger.com
+
+  # Short video / entertainment social
+  - youtube.com
+  - www.youtube.com
+  - m.youtube.com
+  - youtu.be
+  - twitch.tv
+  - www.twitch.tv
+
+  # AI chat / IDE sites
+  - chatgpt.com
+  - chat.openai.com
+  - openai.com
+  - platform.openai.com
+  - claude.ai
+  - www.claude.ai
+  - gemini.google.com
+  - bard.google.com
+  - copilot.microsoft.com
+  - github.com/features/copilot
+  - perplexity.ai
+  - www.perplexity.ai
+  - character.ai
+  - www.character.ai
+  - poe.com
+  - www.poe.com
+  - you.com
+  - www.you.com
+  - phind.com
+  - www.phind.com
+  - hugchat.co
+  - chat.deepseek.com
+  - deepseek.com
+  - www.deepseek.com
+  - grok.x.ai
+  - x.ai
+  - meta.ai
+  - www.meta.ai
+  - pi.ai
+  - www.pi.ai
+  - cursor.com
+  - www.cursor.com
+  - cursor.sh
+  - www.cursor.sh
+  - windsurf.com
+  - codeium.com
+  - www.codeium.com
+  - tabnine.com
+  - www.tabnine.com
+  - anthropic.com
+  - www.anthropic.com
+  - aistudio.google.com
+  - chat.mistral.ai
+  - mistral.ai
+  - groq.com
+  - console.groq.com
+  - bing.com/chat
+  - www.bing.com/chat
+
+  # Games / stores (web)
+  - store.steampowered.com
+  - steamcommunity.com
+  - steampowered.com
+  - epicgames.com
+  - www.epicgames.com
+  - gog.com
+  - www.gog.com
+  - roblox.com
+  - www.roblox.com
+  - minecraft.net
+  - www.minecraft.net
+  - ea.com
+  - www.ea.com
+  - battle.net
+  - www.battle.net
+  - playstation.com
+  - www.playstation.com
+  - xbox.com
+  - www.xbox.com
+
+# Keywords matched against window titles
+blocked_window_keywords:
+  - facebook
+  - instagram
+  - twitter
+  - tiktok
+  - reddit
+  - discord
+  - youtube
+  - twitch
+  - chatgpt
+  - openai
+  - claude
+  - gemini
+  - perplexity
+  - character.ai
+  - copilot
+  - cursor
+  - windsurf
+  - deepseek
+  - mistral
+  - grok
+  - steam
+  - epic games
+  - roblox
+  - whatsapp
+  - telegram
+  - linkedin
+  - threads
+  - snapchat
+
+# Never close windows whose title/class matches these (allow)
+allowed_window_keywords:
+  - w3schools
+  - coddy
+  - duolingo
+  - stack overflow
+  - stackoverflow
+  - github
+  - gitlab
+  - mdn
+  - freecodecamp
+  - leetcode
+  - spotify
+  - apple music
+  - music.apple
+  - cider
+  - focusguard
+
+# Hyprland / WM class allow (music players)
+allowed_window_classes:
+  - spotify
+  - cider
+  - apple-music
+  - AppleMusic
+  - Music
+  - chromium-music.apple.com
+  - firefox-music.apple.com

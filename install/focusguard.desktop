@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=FocusGuard
+Comment=Linux odak kilidi — Açıldıktan sonra birdaha durdurulamaz
+Exec=focusguard gui
+Icon=security-high
+Terminal=false
+Type=Application
+Categories=Utility;Security;
+Keywords=focus;lock;block;
+StartupNotify=true

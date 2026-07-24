@@ -1,0 +1,23 @@
+[Unit]
+Description=FocusGuard focus lock daemon
+After=network.target graphical.session.target
+Wants=graphical.session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m focusguard.daemon
+Restart=always
+RestartSec=1
+KillMode=control-group
+TimeoutStopSec=5
+Environment=FOCUSGUARD_CONFIG=/usr/local/share/focusguard/config
+Environment=FOCUSGUARD_DATA=/var/lib/focusguard
+Environment=PYTHONPATH=/usr/local/share/focusguard
+# Display for jumpscare / window scan (override in drop-in if needed)
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/REPLACE_USER/.Xauthority
+Environment=WAYLAND_DISPLAY=wayland-0
+Environment=XDG_RUNTIME_DIR=/run/user/REPLACE_UID
+
+[Install]
+WantedBy=multi-user.target

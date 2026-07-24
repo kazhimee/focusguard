@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FocusGuard — Linux odak kilidi</title>
+  <meta name="description" content="Linux için odak kilidi. Açıldıktan sonra birdaha durdurulamaz." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #070b10;
+      --bg1: #101820;
+      --ink: #eef3f8;
+      --muted: #8aa0b5;
+      --accent: #38bdf8;
+      --danger: #fb7185;
+      --danger-bg: #2a1218;
+      --line: #1e2a38;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #12304a 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #1a1520 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg0), #0a1018 60%, #070b10);
+      color: var(--ink);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 8vh 24px 64px;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid #1f4e68;
+      background: #102636;
+      color: var(--accent);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: Syne, sans-serif;
+      font-weight: 800;
+      font-size: clamp(48px, 9vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 18px 0 12px;
+    }
+    .lead {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 34ch;
+      line-height: 1.5;
+      margin: 0 0 28px;
+    }
+    .warn {
+      border: 2px solid var(--danger);
+      background: var(--danger-bg);
+      border-radius: 18px;
+      padding: 22px 24px;
+      margin: 0 0 36px;
+      max-width: 640px;
+    }
+    .warn small {
+      display: block;
+      color: #fecaca;
+      letter-spacing: 0.16em;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .warn strong {
+      display: block;
+      font-family: Syne, sans-serif;
+      font-size: clamp(22px, 4vw, 34px);
+      line-height: 1.15;
+      color: #fff;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    a.btn {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    a.btn-primary {
+      background: #e11d48;
+      color: white;
+    }
+    a.btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(16, 24, 32, 0.8);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 120px;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-family: Syne, sans-serif;
+      font-size: 18px;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    pre {
+      background: #0b121a;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      overflow: auto;
+      color: #cde7ff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    footer {
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <span class="badge">Linux only</span>
+    <h1>FocusGuard</h1>
+    <p class="lead">Sosyal medya, Threads, oyun ve yapay zekayı kilitler. Müzik ve kod forumları serbest.</p>
+
+    <section class="warn" aria-label="Uyarı">
+      <small>UYARI</small>
+      <strong>Açıldıktan sonra birdaha durdurulamaz</strong>
+    </section>
+
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/kazhimee/focusguard">GitHub’da aç</a>
+      <a class="btn btn-ghost" href="https://github.com/kazhimee/focusguard#kurulum">Kurulum</a>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <h3>Engel</h3>
+        <p>Instagram, X, TikTok, Threads, Discord, YouTube, Steam, Heroic, Cursor ve AI siteleri.</p>
+      </article>
+      <article class="card">
+        <h3>Serbest</h3>
+        <p>Spotify, Apple Music, w3schools, Coddy, Duolingo, GitHub, Stack Overflow.</p>
+      </article>
+      <article class="card">
+        <h3>Kilit</h3>
+        <p>systemd + hosts + process/window guard. Süre bitmeden stop yok.</p>
+      </article>
+    </div>
+
+    <h2 style="font-family:Syne,sans-serif;margin:40px 0 12px;">Kurulum</h2>
+    <pre>git clone https://github.com/kazhimee/focusguard.git
+cd focusguard
+sudo ./install/install.sh
+focusguard gui</pre>
+
+    <footer>FocusGuard · yalnızca Linux · açıldıktan sonra birdaha durdurulamaz</footer>
+  </main>
+</body>
+</html>

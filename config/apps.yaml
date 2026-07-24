@@ -1,0 +1,87 @@
+# Process names / command substrings to kill while lock is active.
+blocked_processes:
+  # AI IDEs / agents
+  - cursor
+  - Cursor
+  - windsurf
+  - trae
+  - codeium
+  - continue.exe
+  - aider
+  - cline
+  - copilot
+
+  # Games / launchers
+  - steam
+  - steamwebhelper
+  - steamos
+  - heroic
+  - heroicgameslauncher
+  - lutris
+  - bottles
+  - minecraft
+  - minecraft-launcher
+  - Multimc
+  - prismlauncher
+  - lunarclient
+  - roblox
+  - robloxplayer
+  - epicgameslauncher
+  - EpicGamesLauncher
+  - legendary
+  - Battle.net
+  - battle.net
+  - EADesktop
+  - ea-app
+  - UbisoftConnect
+  - GalaxyClient
+  - riotclient
+  - leagueclient
+  - valorant
+  - pathofexile
+
+  # Chat / social apps
+  - discord
+  - Discord
+  - webcord
+  - vencord
+  - vesktop
+  - telegram-desktop
+  - Telegram
+  - whatsapp-for-linux
+  - whatsdesk
+  - element-desktop
+  - slack
+  - threads
+  - Threads
+
+# Short / ambiguous names — match process name (comm) ONLY, not full cmdline
+blocked_process_names_exact:
+  - origin
+  - osu
+  - osu!
+  - gog
+  - upc
+  - rare
+  - itch
+  - cs2
+  - dota2
+  - wine
+  - steam
+
+# Never kill these (music etc.)
+allowed_processes:
+  - spotify
+  - spotify-launcher
+  - cider
+  - apple-music
+  - AppleMusic
+  - music
+  - rhythmbox
+  - strawberry
+  - audacious
+  - cmus
+  - mpv
+  - ffplay
+  - vlc
+  - plasma-browser-integration

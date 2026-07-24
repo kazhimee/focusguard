@@ -1,0 +1,6 @@
+# FocusGuard settings
+lock_days: 30
+poll_interval_seconds: 2
+hosts_reapply_seconds: 15
+window_scan: true
+process_scan: true
